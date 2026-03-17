@@ -11,21 +11,25 @@ from sqlalchemy import text
 # Configure application
 app = Flask(__name__)
 
+
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Obtener la URL de Supabase desde una variable de entorno, 
-# o puedes reemplazar os.getenv(...) con tu URL de conexión entre comillas.
-uri = os.getenv("DATABASE_URL", "postgresql://postgres.djvcdigjfhcysweplbfl:MicaheDev28552806@aws-1-us-east-1.pooler.supabase.com:5432/postgres")
+# Configuración de Base de Datos para Render
+# Render leerá la contraseña desde sus Variables de Entorno
+uri = os.getenv("DATABASE_URL")
 
-# SQLAlchemy requiere 'postgresql://' en vez del antiguo 'postgres://'
-if uri.startswith("postgres://"):
+if uri and uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+}
 db = SQLAlchemy(app)
 
 # time constant to recover a life when the user lost it
