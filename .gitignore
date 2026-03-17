@@ -1,0 +1,25 @@
+# Entorno virtual
+.venv/
+venv/
+env/
+bin/
+lib/
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variables de entorno (SECRETOS)
+.env
+.flaskenv
+
+# Sesiones de Flask y DB local
+flask_session/
+instance/
+*.db
+*.sqlite
+
+# OS basura
+.DS_Store
+Thumbs.db
