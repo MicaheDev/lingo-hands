@@ -1,0 +1,7 @@
+Flask
+Flask-Session
+pytz
+requests
+psycopg2-binary
+Flask-SQLAlchemy
+SQLAlchemy

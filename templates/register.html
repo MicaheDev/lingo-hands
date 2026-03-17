@@ -1,0 +1,36 @@
+{% extends "layout.html" %} {% block title %} Register {% endblock %} {% block
+main %}
+<section class="c-auth__container o-container o-justify-col-center">
+  <form class="c-form c-form--delimiter" action="/register" method="post">
+    <h1 class="c-title u-text-center u-text-uppercase">Create an account</h1>
+    <div class="c-form__div">
+      <input
+        autocomplete="off"
+        autofocus
+        class="c-form__input"
+        name="username"
+        placeholder="Username"
+        type="text"
+      />
+    </div>
+    <div class="c-form__div">
+      <input
+        class="c-form__input"
+        name="password"
+        placeholder="Password"
+        type="password"
+      />
+    </div>
+    <div class="c-form__div">
+      <input
+        class="c-form__input"
+        name="confirmation"
+        placeholder="Confirm Password"
+        type="password"
+      />
+    </div>
+    <button class="c-form__btn" type="submit">Register</button>
+    <a href="/login" class="u-text-primary u-text-center">I have an account</a>
+  </form>
+</section>
+{% endblock %}

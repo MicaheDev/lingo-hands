@@ -1,0 +1,30 @@
+{% extends "layout.html" %} {% block title %} Log In {% endblock %} {% block
+main %}
+<section class="c-auth__container o-container o-justify-col-center">
+  <form class="c-form c-form--delimiter" action="/login" method="post">
+    <h1 class="c-title u-text-center u-text-uppercase">Log in</h1>
+    <div class="c-form__div">
+      <input
+        autocomplete="off"
+        autofocus
+        class="c-form__input"
+        name="username"
+        placeholder="Username"
+        type="text"
+      />
+    </div>
+    <div class="c-form__div">
+      <input
+        class="c-form__input"
+        name="password"
+        placeholder="Password"
+        type="password"
+      />
+    </div>
+    <button class="c-form__btn" type="submit">Enter</button>
+    <a href="/register" class="u-text-primary u-text-center"
+      >You don't have an account?</a
+    >
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <link href="/static/favicon.ico" rel="icon" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <title>Lingo Hands: {% block title %}{% endblock %}</title>
+  </head>
+
+  <body>
+    <!-- the fixer always keeps the header at the top -->
+    <header class="c-header__fixer o-justify-center">
+      <div class="c-header__container o-container o-justify-between">
+        <a href="/" class="c-header__brand">Lingo Hands</a>
+        <!-- navigation links -->
+        <nav class="c-header__nav">
+          <!-- If the user is logged in, these links will be displayed -->
+          {% if session["user_id"] %}
+          <ul class="c-header__list">
+            <li class="c-header__item">
+              <a class="c-header__link" href="/">Home</a>
+            </li>
+
+            <!-- This will only be shown to the admin -->
+            {% if session["role"] == "admin" %}
+            <li class="c-header__item">
+              <a class="c-header__link" href="/dashboard">CMS</a>
+            </li>
+            {% endif %}
+
+            <li class="c-header__item">
+              <a class="c-header__link c-header__link--logout" href="/logout"
+                >Log Out</a
+              >
+            </li>
+          </ul>
+          {% else %}
+
+          <!-- If the user is not logged in, links to log in and register will be displayed-->
+          <ul class="c-header__list">
+            <li class="c-header__item">
+              <a class="c-header__link" href="/register">Register</a>
+            </li>
+            <li class="c-header__item">
+              <a class="c-header__link" href="/login">Log In</a>
+            </li>
+          </ul>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="c-alert alert-{{ category }}" role="alert">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <main class="c-main o-fixer-margin">{% block main %}{% endblock %}</main>
+
+    <footer class="c-footer o-justify-center">
+      <div class="o-container">
+        <p class="u-text-center">Lingo Hands 2025</p>
+      </div>
+    </footer>
+  </body>
+</html>

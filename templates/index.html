@@ -1,0 +1,55 @@
+{% extends "layout.html" %} {% block title %} Home {% endblock %} {% block main
+%}
+
+<!-- User game bar -->
+<div class="c-user__bar__positioner o-justify-center">
+  <div class="c-user__bar__container o-container">
+    <p>{{user_data.username}}</p>
+    <p>{{user_data.xp}} XP</p>
+    <p>❤️ {{user_data.lives}}</p>
+  </div>
+</div>
+
+<!-- Game path or roadmap section -->
+<section class="c-path__container o-fixer-margin">
+  {% for unit in units %} {% for module in unit.modules %}
+
+  <!-- Show module section -->
+  <div class="c-path__module">
+    <h2 class="u-text-center">{{module.order}} {{module.title}}</h2>
+  </div>
+
+  <!-- Levels container -->
+  <div class="c-path__levels">
+    {% for level in module.levels %}
+
+    {# 
+       Calculate horizontal offset to create a zigzag/curved visual path.
+       The pattern repeats every 4 items: [0, 70, 0, -70]
+       This part is doing with Google Gemini
+    #}
+    {% set cycle = loop.index0 % 4 %} {% if cycle == 0 %}{% set offset = 0 %} {%
+    elif cycle == 1 %}{% set offset = 70 %} {% elif cycle == 2 %}{% set offset =
+    0 %} {% else %}{% set offset = -70 %} {% endif %}
+
+    <a
+      href="/lesson/{{level.id}}"
+      class="c-path__level-wrapper 
+      {# Handle completion and XP-lock states via conditional CSS classes #}
+      {{ 'c-path__level-wrapper--completed' if level.id in completed_ids else '' }} 
+      {{ 'c-path__level-wrapper--disable' if level.xp > user_data.xp else '' }}"
+      data-index="{{ loop.index0 }}"
+    >
+      <div
+        class="c-path__level"
+        style="--offset: {{ offset }}px; transform: translateX(var(--offset));"
+      >
+        <div class="c-path__point">{{level.order}}</div>
+        <p class="c-path__title">{{level.title}}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endfor %} {% endfor %}
+</section>
+{% endblock %}

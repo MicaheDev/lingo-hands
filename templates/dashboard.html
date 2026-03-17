@@ -1,0 +1,265 @@
+{% extends "layout.html" %} {% block title %} Dashboard {% endblock %} {% block
+main %}
+
+<div class="c-cms__container o-container">
+  <h1>Course content managment</h1>
+
+  <!-- Form to add new units of teh course -->
+  <form class="c-form u-mb-20" action="/api/units" method="post">
+    <h2>Add new unit</h2>
+
+    <input class="c-form__input" type="text" name="title" placeholder="title" />
+    <textarea
+      class="c-form__input"
+      type="text"
+      name="description"
+      placeholder="description"
+    ></textarea>
+    <button class="c-form__btn" type="submit">Save</button>
+  </form>
+
+  <!-- Render all units added -->
+  <h2>All Units</h2>
+  {% for unit in units %}
+  <section class="c-cms__unit u-mb-20">
+    <header class="c-cms__header o-justify-between">
+      <div>
+        <h2>Unit {{ unit.order_index }}: {{ unit.title }}</h2>
+        <p>{{unit.description}}</p>
+      </div>
+
+      <!-- form to delete the unit -->
+      <form action="/api/units/delete/{{unit.id}}" method="post">
+        <button class="c-form__btn c-form__btn--danger" type="submit">
+          Delete
+        </button>
+      </form>
+    </header>
+
+    <!-- Form for each unit to add modules to its own unit -->
+    <form class="c-form u-mb-20" action="/api/modules" method="post">
+      <h2>Add new module</h2>
+      <input
+        class="c-form__input"
+        type="hidden"
+        name="unit_id"
+        value="{{unit.id}}"
+      />
+      <div class="c-form__group">
+        <input
+          class="c-form__input"
+          type="text"
+          name="title"
+          placeholder="title"
+        />
+        <button class="c-form__btn" type="submit">Save</button>
+      </div>
+    </form>
+
+    <!-- Represent all the modules specific to this unit -->
+    <h2>Modules</h2>
+    {% for module in unit.modules %}
+    <div class="c-cms__module u-mb-20">
+      <header class="c-cms__header o-justify-between">
+        <h2>Module {{ module.order }}: {{ module.title }}</h2>
+
+        <!-- form to delete the module -->
+        <form action="/api/modules/delete/{{module.id}}" method="post">
+          <button class="c-form__btn c-form__btn--danger" type="submit">
+            Delete
+          </button>
+        </form>
+      </header>
+
+      <!-- Form for each module to add levels to its own module -->
+      <form class="c-form u-mb-20" action="/api/levels" method="post">
+        <h2>Add new level</h2>
+        <input
+          class="c-form__input"
+          type="hidden"
+          name="module_id"
+          value="{{module.id}}"
+        />
+        <div class="c-form__group">
+          <input
+            class="c-form__input"
+            type="text"
+            name="title"
+            placeholder="title"
+          />
+          <input
+            class="c-form__input"
+            type="number"
+            name="required_xp"
+            placeholder="xp"
+          />
+          <button class="c-form__btn" type="submit">Save</button>
+        </div>
+      </form>
+
+      <!-- Represent all levels specific to this module -->
+      <h2>Levels</h2>
+      {% for level in module.levels %}
+      <div class="c-cms__level u-mb-20">
+        <header class="c-cms__header o-justify-between">
+          <h2>
+            Level {{ level.order }}: {{ level.title }} ({{ level.xp }} XP)
+          </h2>
+
+          <!-- Form to delete the level -->
+          <form action="/api/levels/delete/{{level.id}}" method="post">
+            <button class="c-form__btn c-form__btn--danger" type="submit">
+              Delete
+            </button>
+          </form>
+        </header>
+        <!-- Form for each level to add content to its own level -->
+        <form class="c-form" action="/api/levels/level-content" method="post">
+          <h2>Add new level content</h2>
+
+          <div class="c-form__group">
+            <input type="hidden" name="level_id" value="{{level.id}}" />
+            <select
+              class="c-form__select"
+              name="step_type"
+              id="step_type-{{level.id}}"
+            >
+              <option value="" selected disabled>Select Step Type</option>
+              <option value="learn">Learn</option>
+              <option value="quiz">Quiz</option>
+            </select>
+            <input
+              class="c-form__input"
+              type="text"
+              name="sign_id"
+              placeholder="Sign identifier"
+            />
+            <input
+              class="c-form__input"
+              type="text"
+              name="meaning"
+              placeholder="meaning"
+            />
+          </div>
+          <textarea
+            class="c-form__input"
+            name="intructions"
+            placeholder="intructions"
+          ></textarea>
+          <!-- If the user selects step_type "learn", this part of the form is not necessary and will be hidden -->
+          <div class="c-form__group" id="answers-{{level.id}}">
+            <input
+              class="c-form__input"
+              type="text"
+              name="option_a"
+              placeholder="Option A"
+            />
+            <input
+              class="c-form__input"
+              type="text"
+              name="option_b"
+              placeholder="Option B"
+            />
+            <input
+              class="c-form__input"
+              type="text"
+              name="option_c"
+              placeholder="Option C"
+            />
+            <input
+              class="c-form__input"
+              type="text"
+              name="correct_option"
+              placeholder="Correct Option"
+            />
+          </div>
+          <button class="c-form__btn" type="submit">Save</button>
+        </form>
+        <div class="content-steps">
+          <h2>Lessons:</h2>
+
+          {% for step in level.content %}
+          <div class="c-cms__lesson u-mb-20">
+            <!-- Learn view -->
+            {% if step.type == 'learn' %}
+
+            <header class="c-cms__header o-justify-between">
+              <p>Learn sign: <strong>{{ step.meaning }}</strong></p>
+
+              <!--form to delete level_content or lesson -->
+              <form
+                action="/api/levels/level-content/delete/{{step.id}}"
+                method="post"
+              >
+                <button class="c-form__btn c-form__btn--danger" type="submit">
+                  Delete
+                </button>
+              </form>
+            </header>
+            {% else %}
+            <!-- Quiz View -->
+            <header class="c-cms__header o-justify-between">
+              <p>Quiz sign: <strong>{{ step.meaning }}</strong></p>
+              <!--form to delete level_content or lesson -->
+              <form
+                action="/api/levels/level-content/delete/{{step.id}}"
+                method="post"
+              >
+                <button class="c-form__btn c-form__btn--danger" type="submit">
+                  Delete
+                </button>
+              </form>
+            </header>
+            <p>{{ step.instructions }}</p>
+            <ul>
+              <li>A {{ step.option_a }}</li>
+              <li>B {{ step.option_b }}</li>
+              <li>C {{ step.option_c }}</li>
+              <li>Correct {{ step.correct }}</li>
+            </ul>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %} {% endfor %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    /*
+    When adding level content, if the step type is "learn," it is not necessary to display the options.
+    */
+
+    // here we get all <select> tags with form name "step_type"
+    selectors = document.querySelectorAll('select[name="step_type"]');
+
+    // here iterate this selectors one by one
+    selectors.forEach((element) => {
+      // listen changes from teh user interaction with de select otpions to do something
+      element.addEventListener("change", (e) => {
+        // get id from <select> tag
+        // that id looks like "step_type-14"
+        elementId = element.attributes["id"].value;
+        // here divide the string in a list where there are "-"
+        //  thsi return an array of 2 words ["step_type-", "id number"]
+        db_id = elementId.split("-")[1];
+
+        // get de value of user select
+        stepType = e.target.value;
+
+        // get container with the same number of id
+        container = document.getElementById(`answers-${db_id}`);
+
+        if (!container) return;
+
+        if (stepType == "learn") container.classList.add("u-hidden");
+        else container.classList.remove("u-hidden");
+      });
+    });
+  });
+</script>
+{% endblock %}

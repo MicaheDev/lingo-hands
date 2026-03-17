@@ -1,0 +1,38 @@
+{% extends "layout.html" %} {% block title %} Lesson {% endblock %} {% block main
+%}
+
+<!-- User game bar -->
+<div class="c-user__bar__positioner o-justify-center">
+  <div class="c-user__bar__container o-container">
+    <p>{{user_data.username}}</p>
+    <p>{{user_data.xp}} XP</p>
+    <p>❤️ {{user_data.lives}}</p>
+  </div>
+</div>
+
+<section class="c-lesson__container o-fixer-margin">
+  <!-- Inject python data of the level content in a script to read on js-->
+  <script type="application/json" id="lesson-json">
+    {{ level_content | tojson | safe }}
+  </script>
+
+  <!-- 
+  Here a "React JS" component is rendered to facilitate interactivity and ease of 
+  development of the 3D scene with the puppet that reproduces the ASL signs.puede
+
+  You can see the React component code in the /lib/dummy folder
+
+  In React, the Three.js library was used with React Three Fiber, which simplifies rendering and interaction with 3D models on the web.
+
+  Use this website:
+
+  https://gltf.pmnd.rs/
+
+  to convert the 3D model in GLB format, animated with Blender, into a React component.
+  -->
+  <div id="lesson"></div>
+</section>
+<!-- here is loading the compiled script of the react js component -->
+<script type="module" src="/static/dist/assets/index.js"></script>
+
+{% endblock %}
